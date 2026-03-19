@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content%}
+<a href="/home/" class="filiar">Voltar</a>
+<h1>Onibus que ja existem</h1>
+{% for x in onibus %}
+<h1>{{x.numero}}</h1>
+<a href="/onibus/{{ x.id }}">Editar</a>
+{% endfor %}
+<a href="onibus/criar">Cria novo onibus</a>
+{% endblock content %}

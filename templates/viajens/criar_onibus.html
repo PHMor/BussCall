@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="/onibus" class="filiar">Voltar</a>
+<h1>Criar onibus</h1>
+
+<form method="POST"> {% csrf_token %}
+
+    <div>
+        <label>Numero:</label><br>
+        <input type="text" name="numero" value="{{ form.numero.value|default:'' }}" 
+               class="{% if form.numero.errors %}is-invalid{% endif %}">
+        {% if form.numero.errors %}
+            <div style="color: red;">{{ form.numero.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div>
+        <label>Placa:</label><br>
+        <input type="text" name="placa" value="{{ form.placa.value|default:'' }}"
+               class="{% if form.placa.errors %}is-invalid{% endif %}">
+        {% if form.placa.errors %}
+            <div style="color: red;">{{ form.placa.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div>
+        <label>Capacidade:</label><br>
+        <input type="text" name="capacidade" value="{{ form.capacidade.value|default:'' }}"
+               class="{% if form.capacidade.errors %}is-invalid{% endif %}">
+        {% if form.capacidade.errors %}
+            <div style="color: red;">{{ form.capacidade.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <input type="submit" value="Salvar Onibus"/>
+</form>
+
+<style>
+    .is-invalid {
+        border: 2px solid red;
+    }
+</style>
+{% endblock content %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="/clientes" class="filiar">Voltar</a>
+<h1>Criar cliente</h1>
+
+<form method="POST"> {% csrf_token %}
+
+    <div>
+        <label>Nome:</label><br>
+        <input type="text" name="nome" value="{{ form.nome.value|default:'' }}" 
+               class="{% if form.nome.errors %}is-invalid{% endif %}">
+        {% if form.nome.errors %}
+            <div style="color: red;">{{ form.nome.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div>
+        <label>Telefone:</label><br>
+        <input type="text" name="telefone" value="{{ form.telefone.value|default:'' }}"
+               class="{% if form.telefone.errors %}is-invalid{% endif %}">
+        {% if form.telefone.errors %}
+            <div style="color: red;">{{ form.telefone.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div>
+        <label>CPF:</label><br>
+        <input type="text" name="cpf" value="{{ form.cpf.value|default:'' }}"
+               class="{% if form.cpf.errors %}is-invalid{% endif %}">
+        {% if form.cpf.errors %}
+            <div style="color: red;">{{ form.cpf.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div>
+        <label>Ônibus:</label><br>
+        {{ form.onibus }}
+        {% if form.onibus.errors %}
+            <div style="color: red;">{{ form.onibus.errors.0 }}</div>
+        {% endif %}
+    </div>
+    <input type="submit" value="Salvar Cliente"/>
+</form>
+
+<style>
+    .is-invalid {
+        border: 2px solid red;
+    }
+</style>
+{% endblock content %}

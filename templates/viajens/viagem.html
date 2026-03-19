@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="subpage">
+    <h1 style="margin-bottom: 100px;">{{ data_hoje }}</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-salvar"><span class="material-symbols-outlined">check</span>Salvar Todas as Alterações</button>
+
+        {% if fila_de_espera %}
+            <div class="onibus-secao aguardando">
+                <div style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseEspera" aria-expanded="false" aria-controls="collapseEspera">
+                    <h2>Aguardando Ônibus</h2>
+                    <p><strong>Total:</strong> {{ fila_de_espera|length }} passageiros aguardando (Clique para expandir)</p>
+                </div>
+                
+                <div id="collapseEspera" class="collapse">
+                    <div style="margin-top: 15px;">
+                        <ul>
+                            {% for v in fila_de_espera %}
+                                <li>
+                                    <strong>Cliente:</strong> {{ v.cliente.nome }}
+                                    <select name="viagem_{{ v.id }}" class="form-select" style="margin-left: 10px; display: inline-block; width: auto;">
+                                        <option value="" selected>-- Manter na Espera --</option>
+                                        {% for onibus in todos_onibus %}
+                                            <option value="{{ onibus.id }}">{{ onibus.numero }} - {{ onibus.placa }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% for placa, dados in viagens.items %}
+            <div class="onibus-secao">
+                
+                <div class="onibus-secao-header {% if dados.capacidade < dados.clientes|length %}lotado{% else %}normal{% endif %}" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseOnibus{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseOnibus{{ forloop.counter }}">
+                    <h2>{{ dados.numero }}</h2>
+                    <p>{{ placa }}</p>
+                    <p style="color: #2b2552;"><strong>Lotação:</strong> {{ dados.clientes|length }} / {{ dados.capacidade }}</p>
+                </div>
+
+                <div id="collapseOnibus{{ forloop.counter }}" class="collapse">
+                    <div class="onibus-secao-content">
+                        <ul>
+                            {% for v in dados.clientes %}
+                                <li>
+                                    <strong>Cliente:</strong> {{ v.cliente.nome }}
+                                    <select name="viagem_{{ v.id }}" class="form-select" style="margin-left: 10px; display: inline-block; width: auto;">
+                                        <option value="">-- Remover do Ônibus (Fila) --</option>
+                                        
+                                        {% for onibus in todos_onibus %}
+                                            <option value="{{ onibus.id }}" {% if v.onibus.id == onibus.id %}selected{% endif %}>
+                                                {{ onibus.numero }} - {{ onibus.placa }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        {% empty %}
+            {% if not fila_de_espera %}
+                <p>Nenhuma viagem agendada para hoje.</p>
+            {% endif %}
+        {% endfor %}
+    </form>
+    
+    <form hx-post="/validar-viagens/" hx-target="#area-de-alertas" hx-swap="innerHTML">
+        {% csrf_token %}
+            <button type="submit" class="btn-finalizar mt-3" onclick="return duplaConfirmacao(this, event)"><span class="material-symbols-outlined">car_lock</span>Confirmar viagem</button>
+    </form>
+    <div id="area-de-alertas"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/viagens.js' %}"></script>
+{% endblock %}

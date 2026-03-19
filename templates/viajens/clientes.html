@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content%}
+<a href="/home/" class="filiar">Voltar</a>
+<h1>Clientes que ja existem</h1>
+{% for x in clientes %}
+<h1>{{x.nome}}</h1>
+<a href="/clientes/{{ x.id }}">Editar</a>
+{% endfor %}
+<a href="clientes/criar">Cria novo cliente</a>
+{% endblock content %}
